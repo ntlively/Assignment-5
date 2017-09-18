@@ -8,6 +8,14 @@ angular.module('listings').controller('ListingsController', ['$scope', '$locatio
       Listings.getAll().then(function(response) {
         $scope.loading = false; //remove loader
         $scope.listings = response.data;
+        
+        var markers = [];
+        for (var i = 0; i < $scope.listings.length; i++) {
+          markers.push(createRandomMarker(i, $scope.listings));
+        }
+        $scope.randomMarkers = markers;
+
+
       }, function(error) {
         $scope.loading = false;
         $scope.error = 'Unable to retrieve listings!\n' + error;
@@ -129,6 +137,7 @@ angular.module('listings').controller('ListingsController', ['$scope', '$locatio
       $scope.success = $stateParams.successMessage;
     }
 
+
     /* Map properties */
     $scope.map = {
       center: {
@@ -137,5 +146,40 @@ angular.module('listings').controller('ListingsController', ['$scope', '$locatio
       }, 
       zoom: 14
     }
+
+    var createRandomMarker = function(i, list,idKey) {
+      //console.log(list);
+      if (idKey == null) {
+        idKey = "id";
+      }
+      //console.log('Hello!');
+
+      if(list[i].coordinates){
+        var latitude =  list[i].coordinates.latitude;
+        var longitude = list[i].coordinates.longitude;
+      }else{
+        console.log('The listing ',list[i].name, ' does not have coordinates in the database and could not be displayed');
+        //this is bad but I'm not sure how to skip
+        var latitude =  0;
+        var longitude = 0;
+      }
+      var ret = {
+        latitude: latitude,
+        longitude: longitude,
+        info: {
+          name: list[i].name,
+          code: list[i].code,
+          address: list[i].address
+        }
+      };
+      ret[idKey] = i;
+      return ret;
+    };
+
+
+
+
   }
 ]);
+
+///
