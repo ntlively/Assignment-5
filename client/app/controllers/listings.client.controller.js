@@ -80,16 +80,22 @@ angular.module('listings').controller('ListingsController', ['$scope', '$locatio
         occurs, pass it to $scope.error. 
        */
       $scope.error = null;
+      var id = $stateParams.listingId;
 
             if (!isValid) {
               $scope.$broadcast('show-errors-check-validity', 'articleForm');
       
               return false;
             }
-      
+            
+            var listing = {
+              name: $scope.name, 
+              code: $scope.code, 
+              address: $scope.address
+            };
       
             /* Update the article using the Listings factory */
-            Listings.update($scope.listing)
+            Listings.update(id,listing)
                     .then(function(response) {
                       //if the object is successfully updated redirect back to the list page
                       $state.go('listings.list', { successMessage: 'Listing succesfully updated!' });
@@ -106,9 +112,9 @@ angular.module('listings').controller('ListingsController', ['$scope', '$locatio
        */
 
       $scope.error = null;
-
+      var id = $stateParams.listingId;
       /* Update the article using the Listings factory */
-      Listings.delete($scope.listing)
+      Listings.delete(id)
           .then(function(response) {
             //if the object is successfully deleted redirect back to the list page
             $state.go('listings.list', { successMessage: 'Listing succesfully deleted!' });
